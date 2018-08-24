@@ -60,7 +60,6 @@ describe('#FusionAuthClient()', function() {
           chai.assert.isNotNull(clientResponse.successResponse);
           chai.expect(clientResponse.successResponse).to.have.property('systemConfiguration');
           const systemConfiguration = clientResponse.successResponse.systemConfiguration;
-          chai.expect(systemConfiguration).to.have.property('backendServers');
           chai.expect(systemConfiguration).to.have.property('emailConfiguration');
           chai.expect(systemConfiguration).to.have.property('failedAuthenticationConfiguration');
           chai.expect(systemConfiguration).to.have.property('jwtConfiguration');
