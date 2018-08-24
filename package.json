@@ -1,0 +1,52 @@
+{
+  "name": "fusionauth-node-client",
+  "version": "1.0.0",
+  "description": "FusionAuth Client written in Node.js",
+  "private": false,
+  "contributors": [
+    {
+      "name": "Daniel DeGroff",
+      "email": "daniel@fusionauth.io"
+    },
+    {
+      "name": "Brian Pontarelli",
+      "email": "brian@fusionauth.io"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/FusionAuth/fusionauth-node-client/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FusionAuth/fusionauth-node-client"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "files": [
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "index.js",
+  "jshintConfig": {
+    "node": true,
+    "esversion": 6,
+    "strict": false
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "should": "^8.3.1",
+    "mocha": "^2.5.3"
+  },
+  "author": "Brian Pontarelli",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "promise": "^7.1.1",
+    "request": "^2.79.0"
+  }
+}
