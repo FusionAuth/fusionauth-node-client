@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, FusionAuth, All Rights Reserved
+ * Copyright (c) 2018-2019, FusionAuth, All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ describe('#FusionAuthClient()', function() {
 
   beforeEach(function() {
     client = new FusionAuthClient('bf69486b-4733-4470-a592-f1bfce7af580', 'http://fusionauth.local');
+    //client.setTenantId('65323339-6137-6531-3135-316238623265');
     return client.deleteApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0')
         .then(() => {
           const applicationRequest = {'application': {'name': 'Node.js FusionAuth Client'}};
