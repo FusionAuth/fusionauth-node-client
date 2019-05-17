@@ -29,83 +29,84 @@ describe('#FusionAuthClient()', function() {
     client = new FusionAuthClient('bf69486b-4733-4470-a592-f1bfce7af580', 'http://fusionauth.local');
     //client.setTenantId('65323339-6137-6531-3135-316238623265');
     return client.deleteApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0')
-        .then(() => {
-          const applicationRequest = {'application': {'name': 'Node.js FusionAuth Client'}};
-          return client.createApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0', applicationRequest);
-        })
-        .then((response) => {
-          chai.assert.strictEqual(response.statusCode, 200);
-          chai.assert.isNotNull(response.successResponse);
-        })
-        .catch((response) => {
-          if (response.statusCode === 404) {
-            const applicationRequest = {'application': {'name': 'Node.js FusionAuth Client'}};
-            return client.createApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0', applicationRequest);
-          } else {
-            console.info(response);
-            console.info(response.statusCode);
-            if (response.errorResponse) {
-              console.error(JSON.stringify(response.errorResponse, null, 2));
-            } else {
-              console.error(response.exception);
-            }
-            chai.assert.isNotNull(null, 'Failed to setup FusionAuth');
-          }
-        });
+                 .then(() => {
+                   /** @type {ApplicationRequest} */
+                   const applicationRequest = {application: {name: 'Node.js FusionAuth Client'}};
+                   return client.createApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0', applicationRequest);
+                 })
+                 .then((response) => {
+                   chai.assert.strictEqual(response.statusCode, 200);
+                   chai.assert.isNotNull(response.successResponse);
+                 })
+                 .catch((response) => {
+                   if (response.statusCode === 404) {
+                     const applicationRequest = {'application': {'name': 'Node.js FusionAuth Client'}};
+                     return client.createApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0', applicationRequest);
+                   } else {
+                     console.info(response);
+                     console.info(response.statusCode);
+                     if (response.errorResponse) {
+                       console.error(JSON.stringify(response.errorResponse, null, 2));
+                     } else {
+                       console.error(response.exception);
+                     }
+                     chai.assert.isNotNull(null, 'Failed to setup FusionAuth');
+                   }
+                 });
   });
 
   it('Retrieve and Update System Configuration', () => {
     return client.retrieveSystemConfiguration()
-        .then((clientResponse) => {
-          chai.assert.strictEqual(clientResponse.statusCode, 200);
-          chai.assert.isNotNull(clientResponse.successResponse);
-          chai.expect(clientResponse.successResponse).to.have.property('systemConfiguration');
-          const systemConfiguration = clientResponse.successResponse.systemConfiguration;
-          chai.expect(systemConfiguration).to.have.property('emailConfiguration');
-          chai.expect(systemConfiguration).to.have.property('failedAuthenticationConfiguration');
-          chai.expect(systemConfiguration).to.have.property('jwtConfiguration');
-          // Modify the System Configuration and assert the change.
-          systemConfiguration.jwtConfiguration.issuer = 'node.fusionauth.io';
-          return client.updateSystemConfiguration({'systemConfiguration': systemConfiguration});
-        })
-        .then((clientResponse) => {
-          chai.assert.strictEqual(clientResponse.statusCode, 200);
-          chai.assert.isNotNull(clientResponse.successResponse);
-          chai.expect(clientResponse.successResponse).to.have.property('systemConfiguration');
-          const systemConfiguration = clientResponse.successResponse.systemConfiguration;
-          chai.expect(systemConfiguration).to.have.property('jwtConfiguration');
-          chai.assert.equal('node.fusionauth.io', systemConfiguration.jwtConfiguration.issuer);
-        });
+                 .then((clientResponse) => {
+                   chai.assert.strictEqual(clientResponse.statusCode, 200);
+                   chai.assert.isNotNull(clientResponse.successResponse);
+                   chai.expect(clientResponse.successResponse).to.have.property('systemConfiguration');
+                   const systemConfiguration = clientResponse.successResponse.systemConfiguration;
+                   chai.expect(systemConfiguration).to.have.property('emailConfiguration');
+                   chai.expect(systemConfiguration).to.have.property('failedAuthenticationConfiguration');
+                   chai.expect(systemConfiguration).to.have.property('jwtConfiguration');
+                   // Modify the System Configuration and assert the change.
+                   systemConfiguration.issuer = 'node.fusionauth.io';
+                   return client.updateSystemConfiguration({'systemConfiguration': systemConfiguration});
+                 })
+                 .then((clientResponse) => {
+                   chai.assert.strictEqual(clientResponse.statusCode, 200);
+                   chai.assert.isNotNull(clientResponse.successResponse);
+                   chai.expect(clientResponse.successResponse).to.have.property('systemConfiguration');
+                   const systemConfiguration = clientResponse.successResponse.systemConfiguration;
+                   chai.expect(systemConfiguration).to.have.property('jwtConfiguration');
+                   chai.assert.equal('node.fusionauth.io', systemConfiguration.issuer);
+                 });
   });
 
   it('Create and Delete a User', () => {
     return client.createUser(null, {
-          'user': {
-            'email': 'nodejs@fusionauth.io',
-            'firstName': 'Jäne',
-            'password': 'password'
-          },
-          'skipVerification': true
-        })
-        .then((clientResponse) => {
-          chai.assert.strictEqual(clientResponse.statusCode, 200);
-          chai.assert.isNotNull(clientResponse.successResponse);
-          chai.expect(clientResponse.successResponse).to.have.property('user');
-          chai.expect(clientResponse.successResponse.user).to.have.property('id');
-          return client.deleteUser(clientResponse.successResponse.user.id);
-        })
-        .then((clientResponse) => {
-          chai.assert.strictEqual(clientResponse.statusCode, 200);
-          chai.assert.isNull(clientResponse.successResponse);
-          return client.retrieveUserByEmail('nodejs@fusionauth.io');
-        })
-        .catch((clientResponse) => {
-          if (clientResponse.statusCode === 400) {
-            console.error(JSON.stringify(clientResponse.errorResponse, null, 2));
-          }
+                   'user': {
+                     'email': 'nodejs@fusionauth.io',
+                     'firstName': 'Jäne',
+                     'password': 'password'
+                   },
+                   'skipVerification': true
+                 })
+                 .then((clientResponse) => {
+                   chai.assert.strictEqual(clientResponse.statusCode, 200);
+                   chai.assert.isNotNull(clientResponse.successResponse);
+                   chai.expect(clientResponse.successResponse).to.have.property('user');
+                   chai.expect(clientResponse.successResponse.user).to.have.property('id');
+                   return client.deleteUser(clientResponse.successResponse.user.id);
+                 })
+                 .then((clientResponse) => {
+                   chai.assert.strictEqual(clientResponse.statusCode, 200);
+                   chai.assert.isNull(clientResponse.successResponse);
+                   return client.retrieveUserByEmail('nodejs@fusionauth.io');
+                 })
+                 .catch((clientResponse) => {
+                   if (clientResponse.statusCode === 400) {
+                     console.error(JSON.stringify(clientResponse.errorResponse, null, 2));
+                   }
 
-          chai.assert.strictEqual(clientResponse.statusCode, 404);
-        });
+                   chai.assert.strictEqual(clientResponse.statusCode, 404);
+                 });
   });
 
 });
