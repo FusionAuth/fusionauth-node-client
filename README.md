@@ -7,7 +7,7 @@ Installation
 To install fusionauth-node-client, use npm
 
 ```bash
-npm install @fusionauth/fusionauth-node-client
+npm install @fusionauth/node-client
 ```
 
 Refer to the FusionAuth API documentation to for request and response formats. 
