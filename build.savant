@@ -15,7 +15,7 @@
  */
 savantVersion = "1.0.0"
 
-project(group: "io.fusionauth", name: "fusionauth-node-client", version: "1.6.2", licenses: ["ApacheV2_0"]) {
+project(group: "io.fusionauth", name: "fusionauth-node-client", version: "1.7.0", licenses: ["ApacheV2_0"]) {
   workflow {
     standard()
   }
@@ -26,7 +26,7 @@ project(group: "io.fusionauth", name: "fusionauth-node-client", version: "1.6.2"
 
   publications {
     main {
-      publication(name: "fusionauth-node-client", type: "zip", file: "fusionauth-node-client-${project.version}.tgz")
+      publication(name: "fusionauth-node-client", type: "tgz", file: "fusionauth-node-client-${project.version}.tgz")
     }
   }
 }
