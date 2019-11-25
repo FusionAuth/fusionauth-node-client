@@ -46,7 +46,6 @@
   "author": "Brian Pontarelli",
   "license": "Apache-2.0",
   "dependencies": {
-    "promise": "^7.1.1",
-    "request": "^2.79.0"
+    "promise": "^7.1.1"
   }
 }
