@@ -21,62 +21,51 @@
 const fusionauth = require('../index');
 const FusionAuthClient = fusionauth.FusionAuthClient;
 const chai = require("chai");
+
+const tenantId = '65323339-6137-6531-3135-316238623265';
 let client;
 
 describe('#FusionAuthClient()', function() {
 
-  beforeEach(function() {
-    client = new FusionAuthClient('bf69486b-4733-4470-a592-f1bfce7af580', 'http://fusionauth.local');
-    //client.setTenantId('65323339-6137-6531-3135-316238623265');
-    return client.deleteApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0')
-                 .then(() => {
-                   /** @type {ApplicationRequest} */
-                   const applicationRequest = {application: {name: 'Node.js FusionAuth Client'}};
-                   return client.createApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0', applicationRequest);
-                 })
-                 .then((response) => {
-                   chai.assert.strictEqual(response.statusCode, 200);
-                   chai.assert.isNotNull(response.successResponse);
-                 })
-                 .catch((response) => {
-                   if (response.statusCode === 404) {
-                     const applicationRequest = {'application': {'name': 'Node.js FusionAuth Client'}};
-                     return client.createApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0', applicationRequest);
-                   } else {
-                     console.info(response);
-                     console.info(response.statusCode);
-                     if (response.errorResponse) {
-                       console.error(JSON.stringify(response.errorResponse, null, 2));
-                     } else {
-                       console.error(response.exception);
-                     }
-                     chai.assert.isNotNull(null, 'Failed to setup FusionAuth');
-                   }
-                 });
+  beforeEach(async () => {
+    client = new FusionAuthClient('bf69486b-4733-4470-a592-f1bfce7af580', 'https://local.fusionauth.io');
+    let response = await client.retrieveTenants();
+
+
+
+    let desiredTenant = response.successResponse.tenants.find((tenant) => {
+      return tenant.id === tenantId
+    });
+
+    if (!desiredTenant) {
+      let defaultTenant = response.successResponse.tenants.find((tenant) => {
+        return tenant.name === "Default"
+      });
+      defaultTenant.id = null;
+      defaultTenant.name = "NodeJS Tenant";
+      response = await client.createTenant(tenantId, {tenant: defaultTenant});
+      chai.assert.isTrue(response.wasSuccessful(), "Failed to create the tenant");
+    }
+
+    // All future requests will use this now
+    client.setTenantId(tenantId);
+
+    try {
+      await client.deleteApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0');
+    } catch (ignore) {
+    }
+
+    /** @type {ApplicationRequest} */
+    const applicationRequest = {application: {name: 'Node.js FusionAuth Client'}};
+    response = await client.createApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0', applicationRequest);
+
+    chai.assert.strictEqual(response.statusCode, 200, "Failed to create the application");
+    chai.assert.isNotNull(response.successResponse);
   });
 
-  it('Retrieve and Update System Configuration', () => {
-    return client.retrieveSystemConfiguration()
-                 .then((clientResponse) => {
-                   chai.assert.strictEqual(clientResponse.statusCode, 200);
-                   chai.assert.isNotNull(clientResponse.successResponse);
-                   chai.expect(clientResponse.successResponse).to.have.property('systemConfiguration');
-                   const systemConfiguration = clientResponse.successResponse.systemConfiguration;
-                   chai.expect(systemConfiguration).to.have.property('emailConfiguration');
-                   chai.expect(systemConfiguration).to.have.property('failedAuthenticationConfiguration');
-                   chai.expect(systemConfiguration).to.have.property('jwtConfiguration');
-                   // Modify the System Configuration and assert the change.
-                   systemConfiguration.issuer = 'node.fusionauth.io';
-                   return client.updateSystemConfiguration({'systemConfiguration': systemConfiguration});
-                 })
-                 .then((clientResponse) => {
-                   chai.assert.strictEqual(clientResponse.statusCode, 200);
-                   chai.assert.isNotNull(clientResponse.successResponse);
-                   chai.expect(clientResponse.successResponse).to.have.property('systemConfiguration');
-                   const systemConfiguration = clientResponse.successResponse.systemConfiguration;
-                   chai.expect(systemConfiguration).to.have.property('jwtConfiguration');
-                   chai.assert.equal('node.fusionauth.io', systemConfiguration.issuer);
-                 });
+  it('retrieveTenantTest', async () => {
+    let response = await client.retrieveTenant(tenantId);
+    chai.assert.isTrue(response.wasSuccessful());
   });
 
   it('Create and Delete a User', () => {

@@ -38,14 +38,16 @@
     "test": "mocha"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
-    "should": "^8.3.1",
-    "mocha": "^2.5.3"
+    "@types/chai": "^4.2.7",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^6.2.2",
+    "should": "^13.2.3"
   },
   "author": "Brian Pontarelli",
   "license": "Apache-2.0",
   "dependencies": {
-    "promise": "^7.1.1"
+    "promise": "^8.0.3"
   }
 }
