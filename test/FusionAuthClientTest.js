@@ -28,10 +28,10 @@ let client;
 describe('#FusionAuthClient()', function() {
 
   beforeEach(async () => {
-    client = new FusionAuthClient('bf69486b-4733-4470-a592-f1bfce7af580', 'https://local.fusionauth.io');
+    const fusionauthUrl = process.env.FUSIONAUTH_URL || "https://local.fusionauth.io";
+    const fusionauthApiKey = process.env.FUSIONAUTH_API_KEY || "bf69486b-4733-4470-a592-f1bfce7af580";
+    client = new FusionAuthClient(fusionauthApiKey, fusionauthUrl);
     let response = await client.retrieveTenants();
-
-
 
     let desiredTenant = response.successResponse.tenants.find((tenant) => {
       return tenant.id === tenantId
