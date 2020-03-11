@@ -55,6 +55,15 @@ describe('#FusionAuthClient()', function() {
     } catch (ignore) {
     }
 
+    // Cleanup the user (just in case a test partially failed)
+    try {
+      response = await client.retrieveUserByEmail("nodejs@fusionauth.io")
+      if (response.wasSuccessful()) {
+        await client.deleteUser(response.successResponse.user.id)
+      }
+    } catch (ignore) {
+    }
+
     /** @type {ApplicationRequest} */
     const applicationRequest = {application: {name: 'Node.js FusionAuth Client'}};
     response = await client.createApplication('e5e2b0b3-c329-4b08-896c-d4f9f612b5c0', applicationRequest);
@@ -96,6 +105,33 @@ describe('#FusionAuthClient()', function() {
 
                    chai.assert.strictEqual(clientResponse.statusCode, 404);
                  });
+  });
+
+  it('Patch a User', () => {
+    return client.createUser(null, {
+                   'user': {
+                     'email': 'nodejs@fusionauth.io',
+                     'firstName': 'Jäne',
+                     'password': 'password'
+                   },
+                   'skipVerification': true
+                 })
+                 .then((clientResponse) => {
+                   chai.assert.strictEqual(clientResponse.statusCode, 200);
+                   chai.assert.isNotNull(clientResponse.successResponse);
+                   chai.expect(clientResponse.successResponse).to.have.property('user');
+                   chai.expect(clientResponse.successResponse.user).to.have.property('id');
+
+                   return client.patchUser(clientResponse.successResponse.user.id, {user: {
+                       firstName: "Jan"
+                     }}).then((clientResponse) => {
+                       chai.assert.strictEqual(clientResponse.statusCode, 200);
+                       chai.assert.isNotNull(clientResponse.successResponse);
+                       chai.expect(clientResponse.successResponse).to.have.property('user');
+                       chai.expect(clientResponse.successResponse.user).to.have.property('id');
+                       chai.expect(clientResponse.successResponse.user.firstName).to.equal("Jan");
+                   });
+                  });
   });
 
 });
