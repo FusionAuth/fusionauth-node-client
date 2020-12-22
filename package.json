@@ -1,6 +1,6 @@
 {
   "name": "@fusionauth/node-client",
-  "version": "1.22.3",
+  "version": "1.22.4",
   "description": "FusionAuth Client written in Node.js",
   "private": false,
   "contributors": [
